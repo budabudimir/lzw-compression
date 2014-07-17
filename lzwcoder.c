@@ -7,6 +7,8 @@
 #define MOD 100003
 #define P   337
 
+#define NOT_IN_TABLE -1
+
 int last[MOD];
 int next[MAX_SIZE];
 int indx[MAX_SIZE];
@@ -32,7 +34,7 @@ int get(char *word, int len) {
       }
    }
 
-   return -1;
+   return NOT_IN_TABLE;
 }
 
 void add(char *word, int len) {
@@ -64,7 +66,7 @@ void generate(FILE *fin, FILE *fout) {
       word[i++] = c;
       int x = get(word, i);
 
-      if (x == -1) {
+      if (x == NOT_IN_TABLE) {
          if (pos < MAX_SIZE) {
             add(word, i);
          }
