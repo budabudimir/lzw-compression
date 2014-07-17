@@ -14,20 +14,20 @@ int lenght[MAX_SIZE];
 char *words[MAX_SIZE];
 int pos = 0;
 
-int hash(char *wrd, int len) {
+int hash(char *word, int len) {
    int i, h = P;
    for (i = 0; i < len; ++i) {
-      h = (P * h + wrd[i]) % MOD;
+      h = (P * h + word[i]) % MOD;
    }
    return h % MOD;
 }
 
-int get(char *wrd, int len) {
+int get(char *word, int len) {
    int i;
-   int h = hash(wrd, len);
+   int h = hash(word, len);
 
    for (i = last[h]; i != -1; i = next[i]) {
-      if (len == lenght[i] && !memcmp(words[i], wrd, len)) {
+      if (len == lenght[i] && !memcmp(words[i], word, len)) {
          return indx[i];
       }
    }
@@ -35,13 +35,13 @@ int get(char *wrd, int len) {
    return -1;
 }
 
-void add(char *wrd, int len) {
-   int h = hash(wrd, len);
+void add(char *word, int len) {
+   int h = hash(word, len);
    next[pos] = last[h];
    indx[pos] = pos;
    lenght[pos] = len;
    words[pos] = calloc(len, 1);
-   memcpy(words[pos], wrd, len);
+   memcpy(words[pos], word, len);
    last[h] = pos++;
 }
 
@@ -51,8 +51,8 @@ void write(unsigned short x, FILE *fout) {
 
 void generate(FILE *fin, FILE *fout) {
    int i = 0;
-   char wrd[MAX_SIZE];
-   memset(wrd, 0, sizeof wrd);
+   char word[MAX_SIZE];
+   memset(word, 0, sizeof word);
 
    for (i = 0; i < ALPHA; ++i) {
       char c[2] = { i, 0 };
@@ -61,22 +61,22 @@ void generate(FILE *fin, FILE *fout) {
 
    char c = 0; i = 0;
    while (fread(&c, 1, 1, fin)) {
-      wrd[i++] = c;
-      int x = get(wrd, i);
+      word[i++] = c;
+      int x = get(word, i);
 
       if (x == -1) {
          if (pos < MAX_SIZE) {
-            add(wrd, i);
+            add(word, i);
          }
 
-         x = get(wrd, i - 1);
+         x = get(word, i - 1);
          write(x, fout); 
 
-         wrd[(i = 1) - 1] = c;
+         word[(i = 1) - 1] = c;
       }
    }
 
-   unsigned int x = get(wrd, i);
+   unsigned int x = get(word, i);
    write(x, fout);
 }
 
